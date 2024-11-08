@@ -49,13 +49,13 @@ class TestHTMLNode(unittest.TestCase):
             "HTMLNode(p, What a strange world, children: None, {'class': 'primary'})",
         )
 
-    #def test_to_html_no_children(self):
-    #    node = LeafNode("p", "Hello, world!")
-    #    self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+    def test_to_html_no_children(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
-    #def test_to_html_no_tag(self):
-    #    node = LeafNode(None, "Hello, world!")
-    #    self.assertEqual(node.to_html(), "Hello, world!")
+    def test_to_html_no_tag(self):
+        node = LeafNode(None, "Hello, world!")
+        self.assertEqual(node.to_html(), "Hello, world!")
 
     #def test_to_html_with_children(self):
     #    child_node = LeafNode("span", "child")
