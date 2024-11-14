@@ -1,7 +1,7 @@
 from unittest import TestCase, main
 import unittest
 
-from lib.block_markdown import markdown_to_blocks
+from lib.block_markdown import block_to_block_type, markdown_to_blocks
 
 class TestBlockMarkdown(TestCase):
     def test_split_blocks(self):
@@ -46,6 +46,31 @@ This is the same paragraph on a new line
                 "* This is a list\n* with items",
             ],
         )
+
+    def test_block_to_block_type(self):
+        block = (
+            "# Heading 1"
+        )
+        self.assertEqual(block_to_block_type(block), "heading")
+
+        block = (
+            "```py\ncode block\n```"
+        )
+        self.assertEqual(block_to_block_type(block), "code")
+
+        block = "> quote one\n> quote two"
+        self.assertEqual(block_to_block_type(block), "quote")
+
+        block = (
+            "- bullet\n"
+            "* a different bullet"
+        )
+        self.assertEqual(block_to_block_type(block), "unordered list")
+
+        block = (
+            "1. item 1\n2. item 2"
+        )
+        self.assertEqual(block_to_block_type(block), "ordered list")
 
 if __name__ == "__main__":
     main()

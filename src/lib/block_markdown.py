@@ -1,3 +1,14 @@
+import re
+from enum import Enum
+
+class BlockType(Enum):
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED = "unordered list"
+    ORDERED = "ordered list"
+    PARAGRAPH = "paragraph"
+
 def markdown_to_blocks(markdown):
     new_list = []
     inline_list = markdown.split("\n\n")
@@ -6,3 +17,11 @@ def markdown_to_blocks(markdown):
             line = line.strip()
             new_list.append(line)
     return new_list
+
+def block_to_block_type(block_text) -> str:
+    if re.match(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING.value
+    if re.match(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE.value
+    if re.match(r"^>\s.+\n?", block_text): return BlockType.QUOTE.value
+    if re.match(r"^-?\*?\s.+\n?", block_text): return BlockType.UNORDERED.value
+    if re.match(r"^\d\.\s.+\n?", block_text): return BlockType.ORDERED.value
+    return BlockType.PARAGRAPH.value
