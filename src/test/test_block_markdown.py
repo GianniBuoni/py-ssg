@@ -1,7 +1,15 @@
 from unittest import TestCase, main
-import unittest
 
-from lib.block_markdown import block_to_block_type, markdown_to_blocks
+from lib.block_markdown import (
+    block_to_block_type,
+    code_node, heading_node,
+    markdown_to_blocks,
+    ordered_node,
+    paragraph_node,
+    quote_node,
+    unordered_node
+    )
+from lib.htmlnode import LeafNode, ParentNode
 
 class TestBlockMarkdown(TestCase):
     def test_split_blocks(self):
@@ -71,6 +79,63 @@ This is the same paragraph on a new line
             "1. item 1\n2. item 2"
         )
         self.assertEqual(block_to_block_type(block), "ordered list")
+
+    def test_block_to_html_node(self):
+        text = "### Heading"
+        self.assertEqual(
+            heading_node(text).tag,
+            "h3"
+        )
+        self.assertEqual(
+            heading_node(text).children,
+            [LeafNode(None, "Heading")]
+        )
+
+        text = "```code\ncode block```"
+        self.assertEqual(
+            code_node(text).children,
+            [
+                ParentNode("pre", [LeafNode(None, "code")]),
+                ParentNode("pre", [LeafNode(None, "code block")])
+            ]
+        )
+
+        text = "> quote 1\n> quote 2"
+        self.assertEqual(
+            quote_node(text).children,
+            [LeafNode(None, "quote 1"), LeafNode(None, "quote 2")]
+        )
+
+        text = "- list item\n- list item 2"
+        self.assertEqual(
+            unordered_node(text).children,
+            [
+                ParentNode("li", [LeafNode(None, "list item")]),
+                ParentNode("li",[LeafNode(None, "list item 2")])
+            ]
+        )
+
+        text = "1. list item\n2. list item 2"
+        self.assertEqual(
+            ordered_node(text).children,
+            [
+                ParentNode("li", [LeafNode(None, "list item")]),
+                ParentNode("li",[LeafNode(None, "list item 2")])
+            ]
+        )
+
+        text = "this has some *italic* and **bold** text"
+        self.assertEqual(
+            paragraph_node(text).children,
+            [
+                LeafNode(None, "this has some "),
+                LeafNode("i", "italic"),
+                LeafNode(None, " and "),
+                LeafNode("b", "bold"),
+                LeafNode(None, " text")
+            ]
+        )
+
 
 if __name__ == "__main__":
     main()
