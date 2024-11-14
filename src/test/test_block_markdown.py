@@ -1,6 +1,7 @@
 from unittest import TestCase, main
 
 from lib.block_markdown import (
+    BlockType,
     block_to_block_type,
     code_node, heading_node,
     markdown_to_blocks,
@@ -59,26 +60,26 @@ This is the same paragraph on a new line
         block = (
             "# Heading 1"
         )
-        self.assertEqual(block_to_block_type(block), "heading")
+        self.assertEqual(block_to_block_type(block), BlockType.HEADING)
 
         block = (
             "```py\ncode block\n```"
         )
-        self.assertEqual(block_to_block_type(block), "code")
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
 
         block = "> quote one\n> quote two"
-        self.assertEqual(block_to_block_type(block), "quote")
+        self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
 
         block = (
             "- bullet\n"
             "* a different bullet"
         )
-        self.assertEqual(block_to_block_type(block), "unordered list")
+        self.assertEqual(block_to_block_type(block), BlockType.UNORDERED)
 
         block = (
             "1. item 1\n2. item 2"
         )
-        self.assertEqual(block_to_block_type(block), "ordered list")
+        self.assertEqual(block_to_block_type(block), BlockType.ORDERED)
 
     def test_block_to_html_node(self):
         text = "### Heading"

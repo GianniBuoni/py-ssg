@@ -44,13 +44,13 @@ def markdown_to_blocks(markdown):
             new_list.append(line)
     return new_list
 
-def block_to_block_type(block_text) -> str:
-    if re.fullmatch(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING.value
-    if re.fullmatch(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE.value
-    if re.fullmatch(r"(>\s.+\n?)+", block_text): return BlockType.QUOTE.value
-    if re.fullmatch(r"(-?\*?\s.+\n?)+", block_text): return BlockType.UNORDERED.value
-    if re.fullmatch(r"(\d\.\s.+\n?)+", block_text): return BlockType.ORDERED.value
-    return BlockType.PARAGRAPH.value
+def block_to_block_type(block_text) -> BlockType:
+    if re.fullmatch(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING
+    if re.fullmatch(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE
+    if re.fullmatch(r"(>\s.+\n?)+", block_text): return BlockType.QUOTE
+    if re.fullmatch(r"(-?\*?\s.+\n?)+", block_text): return BlockType.UNORDERED
+    if re.fullmatch(r"(\d\.\s.+\n?)+", block_text): return BlockType.ORDERED
+    return BlockType.PARAGRAPH
 
 
 def extract_node_children(text: str, delimiter: str) -> list[LeafNode]:
