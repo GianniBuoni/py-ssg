@@ -19,9 +19,9 @@ def markdown_to_blocks(markdown):
     return new_list
 
 def block_to_block_type(block_text) -> str:
-    if re.match(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING.value
-    if re.match(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE.value
-    if re.match(r"^>\s.+\n?", block_text): return BlockType.QUOTE.value
-    if re.match(r"^-?\*?\s.+\n?", block_text): return BlockType.UNORDERED.value
-    if re.match(r"^\d\.\s.+\n?", block_text): return BlockType.ORDERED.value
+    if re.fullmatch(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING.value
+    if re.fullmatch(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE.value
+    if re.fullmatch(r"(>\s.+\n?)+", block_text): return BlockType.QUOTE.value
+    if re.fullmatch(r"(-?\*?\s.+\n?)+", block_text): return BlockType.UNORDERED.value
+    if re.fullmatch(r"(\d\.\s.+\n?)+", block_text): return BlockType.ORDERED.value
     return BlockType.PARAGRAPH.value
