@@ -5,12 +5,13 @@ from lib.block_markdown import (
     block_to_block_type,
     code_node, heading_node,
     markdown_to_blocks,
+    markdown_to_htmlnode,
     ordered_node,
     paragraph_node,
     quote_node,
     unordered_node
     )
-from lib.htmlnode import LeafNode, ParentNode
+from lib.htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestBlockMarkdown(TestCase):
     def test_split_blocks(self):
@@ -135,6 +136,50 @@ This is the same paragraph on a new line
                 LeafNode("b", "bold"),
                 LeafNode(None, " text")
             ]
+        )
+
+        text = """
+# Heading
+
+This is a paragraph.
+
+- Unordered list item.
+- Unordered list item.
+
+[Link to somewhere.](https://google.com)
+
+![image](https://www.boot.dev/_nuxt/5.B754pGI7.png)
+
+This has some *italic* and **bold** text.
+"""
+        self.assertEqual(
+            markdown_to_htmlnode(text).children,
+            ParentNode("body", [
+                ParentNode("h1", [LeafNode(None, "Heading")]),
+                ParentNode("p", [LeafNode(None, "This is a paragraph.")]),
+                ParentNode("ul", [
+                    ParentNode("li", [LeafNode(None, "Unordered list item.")]),
+                    ParentNode("li",[LeafNode(None, "Unordered list item.")])
+                ]),
+                ParentNode("p", [
+                    LeafNode("a", "Link to somewhere.", {
+                        "href": "https://google.com"
+                    })
+                ]),
+                ParentNode("p", [
+                    LeafNode("img", "", {
+                        "src": "https://www.boot.dev/_nuxt/5.B754pGI7.png",
+                        "alt": "image"
+                    })
+                ]),
+                ParentNode("p", [
+                    LeafNode(None, "This has some "),
+                    LeafNode("i", "italic"),
+                    LeafNode(None, " and "),
+                    LeafNode("b", "bold"),
+                    LeafNode(None, " text.")
+                ])
+            ])
         )
 
 

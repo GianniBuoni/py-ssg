@@ -1,7 +1,7 @@
 import re
 from enum import Enum
 
-from lib.htmlnode import LeafNode, ParentNode
+from lib.htmlnode import HTMLNode, LeafNode, ParentNode
 from lib.inline_markdown import text_to_textnodes
 from lib.textnode import text_node_to_html_node
 
@@ -13,27 +13,18 @@ class BlockType(Enum):
     ORDERED = "ordered list"
     PARAGRAPH = "paragraph"
 
-def maarkdown_to_htmlnode(doc):
-    # convert markdown to list of blocks: string -> list of strings
+def markdown_to_htmlnode(doc) -> HTMLNode:
+    children = []
     block_list = markdown_to_blocks(doc)
 
-    # loop through each block (string)
     for block in block_list:
-        # determine block type: string -> BlockType string
         block_type = block_to_block_type(block)
+        html_node = block_type_to_htmlnode(block, block_type)
+        children.append(html_node)
 
-    # create HTMLNode: string -> HTMLNode(
-        # BlockType string -> block tag
-        # value = None
-        # children -> list of strings
-        # use text to textnode on each child:
-            # list of strings -> list of lists of textnodes
-    #)
-
-def blocknode_to_htmlnode(block, block_type):
-    match (block_type):
-        case (BlockType.HEADING.value):
-            return ()
+    body = ParentNode("body", children)
+    print(body)
+    return HTMLNode("html", None, body)
 
 def markdown_to_blocks(markdown):
     new_list = []
@@ -51,6 +42,21 @@ def block_to_block_type(block_text) -> BlockType:
     if re.fullmatch(r"(-?\*?\s.+\n?)+", block_text): return BlockType.UNORDERED
     if re.fullmatch(r"(\d\.\s.+\n?)+", block_text): return BlockType.ORDERED
     return BlockType.PARAGRAPH
+
+def block_type_to_htmlnode(block: str, block_type: BlockType) -> ParentNode:
+    match (block_type):
+        case (BlockType.HEADING):
+            return heading_node(block)
+        case (BlockType.CODE):
+            return code_node(block)
+        case (BlockType.QUOTE):
+            return quote_node(block)
+        case (BlockType.UNORDERED):
+            return unordered_node(block)
+        case (BlockType.ORDERED):
+            return ordered_node(block)
+        case _:
+            return paragraph_node(block) 
 
 
 def extract_node_children(text: str, delimiter: str) -> list[LeafNode]:
