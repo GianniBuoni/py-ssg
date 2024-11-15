@@ -13,7 +13,7 @@ class BlockType(Enum):
     ORDERED = "ordered list"
     PARAGRAPH = "paragraph"
 
-def markdown_to_htmlnode(doc) -> HTMLNode:
+def markdown_to_htmlnode(doc) -> ParentNode:
     children = []
     block_list = markdown_to_blocks(doc)
 
@@ -22,8 +22,7 @@ def markdown_to_htmlnode(doc) -> HTMLNode:
         html_node = block_type_to_htmlnode(block, block_type)
         children.append(html_node)
 
-    body = ParentNode("body", children)
-    return HTMLNode("html", None, body)
+    return ParentNode("body", children)
 
 def markdown_to_blocks(markdown):
     new_list = []
@@ -36,7 +35,7 @@ def markdown_to_blocks(markdown):
 
 def block_to_block_type(block_text) -> BlockType:
     if re.fullmatch(r"^#{1,6}\s.+$", block_text): return BlockType.HEADING
-    if re.fullmatch(r"`{3}(.+\s)+`{3}", block_text): return BlockType.CODE
+    if re.fullmatch(r"`{3}(.*\s)+`{3}", block_text): return BlockType.CODE
     if re.fullmatch(r"(>\s.+\n?)+", block_text): return BlockType.QUOTE
     if re.fullmatch(r"(-?\*?\s.+\n?)+", block_text): return BlockType.UNORDERED
     if re.fullmatch(r"(\d\.\s.+\n?)+", block_text): return BlockType.ORDERED

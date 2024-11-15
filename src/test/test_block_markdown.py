@@ -11,7 +11,7 @@ from lib.block_markdown import (
     quote_node,
     unordered_node
     )
-from lib.htmlnode import HTMLNode, LeafNode, ParentNode
+from lib.htmlnode import LeafNode, ParentNode
 
 class TestBlockMarkdown(TestCase):
     def test_split_blocks(self):
@@ -68,6 +68,9 @@ This is the same paragraph on a new line
         )
         self.assertEqual(block_to_block_type(block), BlockType.CODE)
 
+        block = '```\nfunc main(){\n    fmt.Println("Hello, World!")\n}\n```'
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
+
         block = "> quote one\n> quote two"
         self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
 
@@ -93,7 +96,7 @@ This is the same paragraph on a new line
             [LeafNode(None, "Heading")]
         )
 
-        text = "```code\ncode block```"
+        text = "```\ncode\ncode block\n```"
         self.assertEqual(
             code_node(text).children,
             [
@@ -151,10 +154,16 @@ This is a paragraph.
 ![image](https://www.boot.dev/_nuxt/5.B754pGI7.png)
 
 This has some *italic* and **bold** text.
+
+```
+func main(){
+    fmt.Println("Hello, World!")
+}
+```
 """
         self.assertEqual(
             markdown_to_htmlnode(text).children,
-            ParentNode("body", [
+            [
                 ParentNode("h1", [LeafNode(None, "Heading")]),
                 ParentNode("p", [LeafNode(None, "This is a paragraph.")]),
                 ParentNode("ul", [
@@ -178,8 +187,13 @@ This has some *italic* and **bold** text.
                     LeafNode(None, " and "),
                     LeafNode("b", "bold"),
                     LeafNode(None, " text.")
+                ]),
+                ParentNode("code", [
+                        ParentNode("pre", [LeafNode(None, "func main(){")]),
+                        ParentNode("pre", [LeafNode(None, '    fmt.Println("Hello, World!")')]),
+                        ParentNode("pre", [LeafNode(None, "}")]),
                 ])
-            ])
+            ]
         )
 
 
