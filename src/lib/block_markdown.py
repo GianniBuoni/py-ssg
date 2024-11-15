@@ -23,7 +23,6 @@ def markdown_to_htmlnode(doc) -> HTMLNode:
         children.append(html_node)
 
     body = ParentNode("body", children)
-    print(body)
     return HTMLNode("html", None, body)
 
 def markdown_to_blocks(markdown):
