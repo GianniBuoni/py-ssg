@@ -1,5 +1,7 @@
 import re
 
+from lib.block_markdown import markdown_to_htmlnode
+
 
 def extract_title(markdown: str) -> str:
     delimiter = r"^#\s(.*)"
@@ -9,3 +11,14 @@ def extract_title(markdown: str) -> str:
     if len(match) > 1:
         raise Exception("Invalid markdown: More than one h1 present.")
     return match[0].strip()
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"\nGenerating page from {from_path} to {dest_path} via {template_path}")
+
+    f = open(from_path)
+    file_contents = f.read()
+
+    body = markdown_to_htmlnode(file_contents).to_html()
+    title = extract_title(file_contents)
+
+    print(body)
