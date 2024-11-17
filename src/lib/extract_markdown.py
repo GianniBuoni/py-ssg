@@ -18,7 +18,10 @@ def generate_page(from_path, template_path, dest_path):
     f = open(from_path)
     file_contents = f.read()
 
-    body = markdown_to_htmlnode(file_contents).to_html()
     title = extract_title(file_contents)
+    body = ""
+    blocks = markdown_to_htmlnode(file_contents)
+    for block in blocks:
+        body += block.to_html()
 
-    print(body)
+    return title, body

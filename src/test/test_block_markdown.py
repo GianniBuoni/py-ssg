@@ -162,7 +162,7 @@ func main(){
 ```
 """
         self.assertEqual(
-            markdown_to_htmlnode(text).children,
+            markdown_to_htmlnode(text),
             [
                 ParentNode("h1", [LeafNode(None, "Heading")]),
                 ParentNode("p", [LeafNode(None, "This is a paragraph.")]),

@@ -1,7 +1,7 @@
 import re
 from enum import Enum
 
-from lib.htmlnode import HTMLNode, LeafNode, ParentNode
+from lib.htmlnode import LeafNode, ParentNode
 from lib.inline_markdown import text_to_textnodes
 from lib.textnode import text_node_to_html_node
 
@@ -13,7 +13,7 @@ class BlockType(Enum):
     ORDERED = "ordered list"
     PARAGRAPH = "paragraph"
 
-def markdown_to_htmlnode(doc) -> ParentNode:
+def markdown_to_htmlnode(doc) -> list[ParentNode]:
     children = []
     block_list = markdown_to_blocks(doc)
 
@@ -22,7 +22,7 @@ def markdown_to_htmlnode(doc) -> ParentNode:
         html_node = block_type_to_htmlnode(block, block_type)
         children.append(html_node)
 
-    return ParentNode("body", children)
+    return children
 
 def markdown_to_blocks(markdown):
     new_list = []
