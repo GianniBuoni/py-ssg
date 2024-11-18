@@ -99,10 +99,7 @@ This is the same paragraph on a new line
         text = "```\ncode\ncode block\n```"
         self.assertEqual(
             code_node(text).children,
-            [
-                ParentNode("pre", [LeafNode(None, "code")]),
-                ParentNode("pre", [LeafNode(None, "code block")])
-            ]
+            [ParentNode("code", [LeafNode(None, "code\n"), LeafNode(None, "code block\n")])]
         )
 
         text = "> quote 1\n> quote 2"
@@ -188,10 +185,12 @@ func main(){
                     LeafNode("b", "bold"),
                     LeafNode(None, " text.")
                 ]),
-                ParentNode("code", [
-                        ParentNode("pre", [LeafNode(None, "func main(){")]),
-                        ParentNode("pre", [LeafNode(None, '    fmt.Println("Hello, World!")')]),
-                        ParentNode("pre", [LeafNode(None, "}")]),
+                ParentNode("pre", [
+                    ParentNode("code", [
+                        LeafNode(None, "func main(){\n"),
+                        LeafNode(None, '    fmt.Println("Hello, World!")\n'),
+                        LeafNode(None, "}\n")
+                    ])
                 ])
             ]
         )

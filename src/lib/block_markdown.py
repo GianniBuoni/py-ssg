@@ -79,14 +79,16 @@ def heading_node(text: str) -> ParentNode:
 def code_node(text: str) -> ParentNode:
     children = extract_node_children(text, r"`{3}")
     children = list(map(
-        lambda x: ParentNode("pre", [x]),
+        lambda x: LeafNode(None, f"{x.value}\n"),
         children
     ))
-    return ParentNode("code", children)
+    return (ParentNode("pre", [
+        ParentNode("code", children)
+    ]))
 
 def quote_node(text: str) -> ParentNode:
     children = extract_node_children(text, r"^>\s")
-    return ParentNode("quoteblock",children)
+    return ParentNode("blockquote",children)
 
 def unordered_node(text: str) -> ParentNode:
     children = extract_node_children(text, r"^-?\*?\s")
