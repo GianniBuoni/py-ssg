@@ -96,6 +96,19 @@ This is the same paragraph on a new line
             [LeafNode(None, "Heading")]
         )
 
+        text = "- list item with *italic* text\n- another list"
+        self.assertEqual(
+            unordered_node(text).children,
+            [
+                ParentNode("li", [
+                    LeafNode(None, "list item with "), LeafNode("i", "italic"), LeafNode(None, " text")
+                ]),
+                ParentNode("li", [
+                    LeafNode(None, "another list")
+                ])
+            ]
+        )
+
         text = "```\ncode\ncode block\n```"
         self.assertEqual(
             code_node(text).children,

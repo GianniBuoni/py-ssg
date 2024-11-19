@@ -56,56 +56,79 @@ def block_type_to_htmlnode(block: str, block_type: BlockType) -> ParentNode:
         case _:
             return paragraph_node(block) 
 
-
-def extract_node_children(text: str, delimiter: str) -> list[LeafNode]:
+def extract_node(text: str, delimiter: str) -> list[list[LeafNode]]:
     children = []
     text_list: list[str] = (text.split("\n"))
     for substring in text_list:
-        # regex substring replacement
+        # regex remove symbols and white space
         substring = re.sub(delimiter, "", substring)
+
+        # raw strings turned into flat list of text nodes
         working_list = text_to_textnodes(substring)
+
+        # turn all text nodes into flat list of leaf nodes
         working_list = list(map(
             lambda x: text_node_to_html_node(x),
             working_list
         ))
-        children.extend(working_list)
+
+        children.append(working_list)
+
     return children
 
+
 def heading_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"^#{1,6}\s")
+    children = extract_node(text, r"^#{1,6}\s")
+
+    # flatten list
+    children = [x for xs in children for x in xs]
+    
     heading_tag = f"h{len(re.findall(r'#', text))}"
     return ParentNode(heading_tag, children)
 
 def code_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"`{3}")
+    children = extract_node(text, r"`{3}")
+
+    # flatten list
+    children = [x for xs in children for x in xs]
+
     children = list(map(
         lambda x: LeafNode(None, f"{x.value}\n"),
         children
     ))
+
     return (ParentNode("pre", [
         ParentNode("code", children)
     ]))
 
 def quote_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"^>\s")
+    children = extract_node(text, r"^>\s")
+
+    # flatten list
+    children = [x for xs in children for x in xs]
+
     return ParentNode("blockquote",children)
 
 def unordered_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"^-?\*?\s")
+    children = extract_node(text, r"^-?\*?\s")
     children = list(map(
-        lambda x: ParentNode("li", [x]),
+        lambda x: ParentNode("li", x),
         children
     ))
     return ParentNode("ul", children)
 
 def ordered_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"^\d\.\s")
+    children = extract_node(text, r"^\d\.\s")
     children = list(map(
-        lambda x: ParentNode("li", [x]),
+        lambda x: ParentNode("li", x),
         children
     ))
     return ParentNode("ol", children)
 
 def paragraph_node(text: str) -> ParentNode:
-    children = extract_node_children(text, r"")
+    children = extract_node(text, r"")
+
+    # flatten list
+    children = [x for xs in children for x in xs]
+
     return ParentNode("p", children)
