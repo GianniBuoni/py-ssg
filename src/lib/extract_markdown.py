@@ -13,7 +13,7 @@ def extract_title(markdown: str) -> str:
     return match[0].strip()
 
 def generate_page(from_path, template_path, dest_path):
-    print(f"\nGenerating page from {from_path} to {dest_path} via {template_path}")
+    print(f"- Generating page from {from_path} to {dest_path} via {template_path}")
 
     page_content = generate_page_content(from_path)
     html = replace_template_html(page_content, template_path)

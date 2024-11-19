@@ -1,13 +1,12 @@
 import shutil
 from os import path, mkdir
-from lib.copy_static import copy_static
-from lib.extract_markdown import generate_page
+from lib.copy_static import copy_static, generate_pages_recursive
 
 def main():
     # paths
     public = path.join("public")
     static = path.join("static")
-    markdown = path.join("content", "index.md")
+    content = path.join("content")
     template = path.join("content", "template.html")
 
     # delete public if already exists
@@ -18,9 +17,10 @@ def main():
     # make new puclic directory
     print("\nCreating new public directory.")
     mkdir(public)
-
     copy_static(static, public)
-    generate_page(markdown, template, public)
+
+    print("\nGenerating pages.")
+    generate_pages_recursive(content, template, public)
 
 if __name__ == "__main__":
     main()
